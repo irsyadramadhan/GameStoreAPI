@@ -63,7 +63,7 @@ public class GameService : IGameService
         var game = await _context.Games
             .Include(g => g.Category)
             .FirstOrDefaultAsync(g => g.Id == id)
-            ?? throw new KeyNotFoundException("Game tidak ditemukan.");
+            ?? throw new KeyNotFoundException("Game not found.");
 
         return new GameResponseDto
         {
@@ -82,7 +82,7 @@ public class GameService : IGameService
     {
         bool categoryExists = await _context.Categories.AnyAsync(c => c.Id == request.CategoryId);
         if (!categoryExists)
-            throw new KeyNotFoundException("Category tidak ditemukan.");
+            throw new KeyNotFoundException("Category not found.");
 
         var game = new Game
         {
@@ -104,11 +104,11 @@ public class GameService : IGameService
     public async Task<GameResponseDto> UpdateAsync(int id, GameRequestDto request)
     {
         var game = await _context.Games.FindAsync(id)
-            ?? throw new KeyNotFoundException("Game tidak ditemukan.");
+            ?? throw new KeyNotFoundException("Game not found.");
 
         bool categoryExists = await _context.Categories.AnyAsync(c => c.Id == request.CategoryId);
         if (!categoryExists)
-            throw new KeyNotFoundException("Category tidak ditemukan.");
+            throw new KeyNotFoundException("Category not found.");
 
         game.Title = request.Title;
         game.Description = request.Description;
@@ -126,7 +126,7 @@ public class GameService : IGameService
     public async Task DeleteAsync(int id)
     {
         var game = await _context.Games.FindAsync(id)
-            ?? throw new KeyNotFoundException("Game tidak ditemukan.");
+            ?? throw new KeyNotFoundException("Game not found.");
 
         game.IsDeleted = true; // soft delete
         await _context.SaveChangesAsync();

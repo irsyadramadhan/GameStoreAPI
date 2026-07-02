@@ -24,7 +24,7 @@ public class CartService : ICartService
     {
         var gameExists = await _context.Games.AnyAsync(g => g.Id == gameId);
         if (!gameExists)
-            throw new KeyNotFoundException("Game tidak ditemukan.");
+            throw new KeyNotFoundException("Game not found.");
 
         var cart = await GetOrCreateCartAsync(userId);
 
@@ -32,7 +32,7 @@ public class CartService : ICartService
             .AnyAsync(ci => ci.CartId == cart.Id && ci.GameId == gameId);
 
         if (alreadyInCart)
-            throw new InvalidOperationException("Game sudah ada di cart.");
+            throw new InvalidOperationException("Game already in cart.");
 
         _context.CartItems.Add(new CartItem { CartId = cart.Id, GameId = gameId });
         await _context.SaveChangesAsync();
@@ -46,7 +46,7 @@ public class CartService : ICartService
 
         var item = await _context.CartItems
             .FirstOrDefaultAsync(ci => ci.Id == cartItemId && ci.CartId == cart.Id)
-            ?? throw new KeyNotFoundException("Item tidak ditemukan di cart kamu.");
+            ?? throw new KeyNotFoundException("Item not found in cart.");
 
         _context.CartItems.Remove(item);
         await _context.SaveChangesAsync();

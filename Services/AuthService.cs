@@ -49,7 +49,7 @@ public class AuthService : IAuthService
         var user = await _context.Users.FirstOrDefaultAsync(u => u.Email == request.Email);
 
         if (user == null || !BCrypt.Net.BCrypt.Verify(request.Password, user.PasswordHash))
-            throw new UnauthorizedAccessException("Email atau password salah.");
+            throw new UnauthorizedAccessException("Incorrect email or password.");
 
         return await GenerateAuthResponse(user);
     }
@@ -59,7 +59,7 @@ public class AuthService : IAuthService
         var user = await _context.Users.FirstOrDefaultAsync(u => u.RefreshToken == refreshToken);
 
         if (user == null || user.RefreshTokenExpiry < DateTime.UtcNow)
-            throw new UnauthorizedAccessException("Refresh token tidak valid atau sudah expired.");
+            throw new UnauthorizedAccessException("Invalid or expired refresh token.");
 
         return await GenerateAuthResponse(user);
     }

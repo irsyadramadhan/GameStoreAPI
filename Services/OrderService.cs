@@ -22,7 +22,7 @@ public class OrderService : IOrderService
             .FirstOrDefaultAsync(c => c.UserId == userId);
 
         if (cart == null || cart.Items.Count == 0)
-            throw new InvalidOperationException("Cart kosong, tidak bisa checkout.");
+            throw new InvalidOperationException("Cart is empty, unable to checkout.");
 
         using var transaction = await _context.Database.BeginTransactionAsync();
         try
@@ -86,7 +86,7 @@ public class OrderService : IOrderService
             .Include(o => o.Items)
             .ThenInclude(oi => oi.Game)
             .FirstOrDefaultAsync(o => o.Id == orderId && o.UserId == userId)
-            ?? throw new KeyNotFoundException("Order tidak ditemukan.");
+            ?? throw new KeyNotFoundException("Order not found.");
 
         return new OrderResponseDto
         {

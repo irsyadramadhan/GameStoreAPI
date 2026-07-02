@@ -7,7 +7,7 @@ public static class ClaimsPrincipalExtensions
     public static int GetUserId(this ClaimsPrincipal user)
     {
         var idClaim = user.FindFirst(ClaimTypes.NameIdentifier)
-            ?? throw new UnauthorizedAccessException("User ID tidak ditemukan di token.");
+            ?? throw new UnauthorizedAccessException("User ID not found in token.");
 
         return int.Parse(idClaim.Value);
     }

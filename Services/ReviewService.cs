@@ -34,11 +34,11 @@ public class ReviewService : IReviewService
     public async Task<ReviewResponseDto> CreateAsync(int userId, int gameId, ReviewRequestDto request)
     {
         if (request.Rating < 1 || request.Rating > 5)
-            throw new ArgumentException("Rating harus antara 1 sampai 5.");
+            throw new ArgumentException("Rating must be between 1 and 5.");
 
         var gameExists = await _context.Games.AnyAsync(g => g.Id == gameId);
         if (!gameExists)
-            throw new KeyNotFoundException("Game tidak ditemukan.");
+            throw new KeyNotFoundException("Game not found.");
 
         // Business rule: harus pernah beli game ini
         bool hasPurchased = await _context.OrderItems
@@ -46,13 +46,13 @@ public class ReviewService : IReviewService
             .AnyAsync(oi => oi.GameId == gameId && oi.Order.UserId == userId);
 
         if (!hasPurchased)
-            throw new InvalidOperationException("Kamu harus membeli game ini dulu sebelum bisa review.");
+            throw new InvalidOperationException("You must buy this game first to leave a review.");
 
         bool alreadyReviewed = await _context.Reviews
             .AnyAsync(r => r.GameId == gameId && r.UserId == userId);
 
         if (alreadyReviewed)
-            throw new InvalidOperationException("Kamu sudah pernah review game ini.");
+            throw new InvalidOperationException("You have already reviewed this game.");
 
         var review = new Review
         {
